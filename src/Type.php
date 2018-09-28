@@ -14,7 +14,7 @@
 namespace Idiot;
 
 use stdClass;
-use Icecave\Flax\Object;
+use Icecave\Flax\UniversalObject;
 
 class Type
 {
@@ -137,7 +137,7 @@ class Type
      * Object type
      *
      * @param  integer $value
-     * @return Object
+     * @return UniversalObject
      */
     public static function object($class, $properties)
     {
@@ -148,6 +148,6 @@ class Type
             $std->$key = ($value instanceof Type) ? $value->value : $value;
         }
 
-        return new Object($class, $std);
+        return new UniversalObject($class, $std);
     }
 }

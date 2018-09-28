@@ -1,12 +1,30 @@
 {
-  "name": "lornewang/idiot",
+  "name": "heyanlong/idiot",
   "description": "PHP Dubbo Client in Zookeeper",
-  "keywords": ["dubbo", "zookeeper"],
+  "keywords": [
+    "dubbo",
+    "zookeeper",
+    "hessian",
+    "burlap",
+    "binary",
+    "protocol",
+    "java",
+    "webservice",
+    "api"
+  ],
   "type": "library",
+  "homepage": "https://github.com/heyanlong/idiot",
   "license": "MIT",
+  "authors": [
+    {
+      "name": "Yanlong He",
+      "email": "yanlong.hee@gmail.com",
+      "homepage": "https://github.com/heyanlong"
+    }
+  ],
   "require": {
-    "php": ">=5.4",
-    "icecave/flax": "0.1.*"
+    "php": ">=7.0",
+    "heyanlong/flax": "0.1.*"
   },
   "autoload": {
     "psr-4": {
