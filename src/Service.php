@@ -51,7 +51,7 @@ class Service
      * @param  array  $args
      * @return string
      */
-    public function invoke($method, $args)
+    public function invoke($method, $args, $timeout = 6)
     {
         $proto = Adapter::protocol($this->protocol);
  
@@ -63,7 +63,8 @@ class Service
             $args, 
             $this->group, 
             $this->version, 
-            $this->dubboVersion
+            $this->dubboVersion,
+            $timeout
         );
     }
 

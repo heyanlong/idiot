@@ -17,5 +17,5 @@ abstract class AbstractProtocol
 {
     const DEFAULT_DUBBO_VERSION = '2.8.4';
 
-    abstract public function connect($host, $port, $path, $method, $args, $group, $version, $dubboVersion);
+    abstract public function connect($host, $port, $path, $method, $args, $group, $version, $dubboVersion, $timeout = 10);
 }

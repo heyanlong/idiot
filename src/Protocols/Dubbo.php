@@ -27,39 +27,41 @@ class Dubbo extends AbstractProtocol
 {
     const DEFAULT_LANGUAGE = 'Java';
 
-    public function connect($host, $port, $path, $method, $args, $group, $version, $dubboVersion = self::DEFAULT_DUBBO_VERSION)
+    public function connect($host, $port, $path, $method, $args, $group, $version, $dubboVersion = self::DEFAULT_DUBBO_VERSION, $timeout = 10)
     {
         try
         {
             $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
             socket_connect($socket, $host, $port);
 
-            $buffer = $this->buffer($path, $method, $args, $group, $version, $dubboVersion);
+            $buffer = $this->buffer($path, $method, $args, $group, $version, $dubboVersion, $timeout * 1000);
             socket_write($socket, $buffer, strlen($buffer));
 
             $data = '';
             $bl = 16;
+            $read = [$socket];
+            $write = [];
+            $ex = [];
 
             do
             {
-                $chunk = @socket_read($socket, 1024);
+                if (socket_select($read, $write, $ex, $timeout)) {
+                    $chunk = @socket_read($socket, 1024);
 
-                if (empty($data))
-                {
-                    $arr = Utility::sliceToArray($chunk, 0, 16);
-                    $i = 0;
-                    
-                    while ($i < 3)
-                    {
-                        $bl += array_pop($arr) * pow(256, $i++);
+                    if (empty($data)) {
+                        $arr = Utility::sliceToArray($chunk, 0, 16);
+                        $i = 0;
+
+                        while ($i < 3) {
+                            $bl += array_pop($arr) * pow(256, $i++);
+                        }
                     }
-                }
 
-                $data .= $chunk;
+                    $data .= $chunk;
 
-                if (empty($chunk) || strlen($data) >= $bl)
-                {
-                    break;
+                    if (empty($chunk) || strlen($data) >= $bl) {
+                        break;
+                    }
                 }
             }
             while(TRUE);
@@ -119,7 +121,7 @@ class Dubbo extends AbstractProtocol
         return $data;
     }
 
-    private function buffer($path, $method, $args, $group, $version, $dubboVersion)
+    private function buffer($path, $method, $args, $group, $version, $dubboVersion, $timeout = 60000)
     {
         $typeRefs = $this->typeRefs($args);
 
@@ -128,7 +130,7 @@ class Dubbo extends AbstractProtocol
             'version' => $version,
             'group' => $group,
             'path' => $path,
-            'timeout' => '60000'
+            'timeout' => $timeout
         ]);
 
         $bufferBody = $this->bufferBody($path, $method, $typeRefs, $args, $attachment, $version, $dubboVersion);
