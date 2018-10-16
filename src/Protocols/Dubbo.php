@@ -99,7 +99,7 @@ class Dubbo extends AbstractProtocol
 
         if ($data instanceof DateTime)
         {
-            return $data->unixTime();
+            return date('Y-m-d H:i:s', $data->unixTime());
         }
         
         if ($data instanceof stdClass)
